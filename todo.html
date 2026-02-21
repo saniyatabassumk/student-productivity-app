@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="navbar">
+  <h2>SmartTrack 🚀</h2>
+  <div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="todo.html">To-Do</a>
+    <a href="auth.html">Logout</a>
+  </div>
+</div>
+
+<div class="page">
+  <div class="card">
+    <h3>To-Do List 📝</h3>
+
+    <input type="text" id="todoInput" placeholder="Enter Task">
+    <button onclick="addTodo()">Add Task</button>
+
+    <ul id="todoList"></ul>
+  </div>
+</div>
+
+<script>
+async function loadTodos() {
+  const res = await fetch("http://localhost:5000/todos");
+  const data = await res.json();
+  const list = document.getElementById("todoList");
+  list.innerHTML = "";
+
+  data.forEach(todo => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span style="${todo.completed ? 'text-decoration: line-through;' : ''}">
+        ${todo.task}
+      </span>
+      <div>
+        <button onclick="toggleTodo('${todo._id}')">✔</button>
+        <button onclick="deleteTodo('${todo._id}')">❌</button>
+      </div>
+    `;
+    list.appendChild(li);
+  });
+}
+
+async function addTodo() {
+  const task = document.getElementById("todoInput").value;
+
+  await fetch("http://localhost:5000/addTodo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ task })
+  });
+
+  document.getElementById("todoInput").value = "";
+  loadTodos();
+}
+
+async function toggleTodo(id) {
+  await fetch(`http://localhost:5000/toggleTodo/${id}`, { method: "PUT" });
+  loadTodos();
+}
+
+async function deleteTodo(id) {
+  await fetch(`http://localhost:5000/deleteTodo/${id}`, { method: "DELETE" });
+  loadTodos();
+}
+
+loadTodos();
+</script>
+
+</body>
+</html>

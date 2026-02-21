@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attendance Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="navbar">
+  <h2>SmartTrack 🚀</h2>
+  <div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="todo.html">To-Do</a>
+    <a href="auth.html">Logout</a>
+  </div>
+</div>
+
+<div class="page">
+  <div class="card">
+    <h3>Attendance Calculator 📊</h3>
+
+    <input type="number" id="totalClasses" placeholder="Total Classes">
+    <input type="number" id="attendedClasses" placeholder="Classes Attended">
+    <input type="number" id="targetPercent" placeholder="Target % (e.g. 85)">
+
+    <button onclick="calculateAttendance()">Calculate</button>
+
+    <div id="attendanceResult" class="result"></div>
+  </div>
+</div>
+
+<script>
+function calculateAttendance() {
+  const total = parseInt(document.getElementById("totalClasses").value);
+  const attended = parseInt(document.getElementById("attendedClasses").value);
+  const target = parseFloat(document.getElementById("targetPercent").value);
+  const result = document.getElementById("attendanceResult");
+
+  if (!total || !attended || !target || attended > total) {
+    result.innerHTML = "❌ Invalid Input";
+    return;
+  }
+
+  const current = ((attended / total) * 100).toFixed(2);
+  const required = Math.ceil((target / 100) * total);
+
+  let output = `<b>Current Attendance:</b> ${current}%<br><br>`;
+
+  if (attended >= required) {
+    output += `✅ You meet ${target}% requirement.`;
+  } else {
+    output += `📌 You must attend at least <b>${required}</b> classes.<br>`;
+    output += `📌 Need <b>${required - attended}</b> more classes.`;
+  }
+
+  result.innerHTML = output;
+}
+</script>
+
+</body>
+</html>
